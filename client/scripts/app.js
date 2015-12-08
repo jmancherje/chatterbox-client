@@ -102,7 +102,7 @@ app.handleSubmit = function () {
     var messageObj = {
       username: $('#username').val(),
       text : $('#message').val(),
-      roomname: $('#roomSelect').val()
+      roomname: $('#roomname').val()||$('#roomSelect').val()
     }
     console.log(messageObj);
     app.send(messageObj);
@@ -110,7 +110,7 @@ app.handleSubmit = function () {
 
 $(document).ready(function(){
   app.init();
-
+  setInterval(app.fetch,1500);
   $('#chats').on('click', 'p.userName', function () {
     app.addFriend($(this).text());
   });
