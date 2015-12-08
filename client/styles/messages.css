@@ -1,11 +1,12 @@
-/*#chats {
-  width: 100%;
+#chats {
+  width: 500px;
 }
 .chatMessage {
   display: block;
   margin: 0 auto;
-  wi*//*dth: 80%;*/
-/*}*/
+  width: 80%;
+  /*border: 1px solid grey;*/
+}
 .userName {
   font-size: 1.3em;
 

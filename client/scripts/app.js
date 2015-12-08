@@ -1,16 +1,25 @@
 // YOUR CODE HERE:
 
-var app = {
-  init : function () {
-    //$.get('https://api.parse.com/1/classes/chatterbox.json', message)
-  }
-};
+var app = {};
 
-var message = {
-  username: 'shawndrost',
-  text: 'trololo',
-  roomname: '4chan'
-};
+app.init = function () {
+  //fetch messages
+  
+  //set chatLog to fetched messages
+  //iterate over first ten messages
+    //append to chat
+
+}
+
+app.chatLog = [];
+
+app.append = function (item){
+  var message = escapeHtml(item.text);
+  $('#chats').append('<div class="chatMessage"> <p class="userName">' 
+  + item.username  + '</p> <p class="messageContent">' 
+  + message + '</p> </div>');
+}
+
 
 app.server = 'https://api.parse.com/1/classes/chatterbox';
 var messageStore = [];
@@ -39,13 +48,30 @@ app.fetch = function (){
     dataType: 'json',
     contentType: 'application/json',
     success: function (data) {
-      console.log('Chatterbox: message sent');
-      console.log(data);
-      var recentMessage = data.results[0]
-        
-      $('#chats').append('<div class="chatMessage"> <p class="userName">' 
-        + recentMessage.username  + '</p> <p class="messageContent">' 
-        + recentMessage.text + '</p> </div>');
+
+
+      if ($('#chats').children.length <= 2) {
+      // initial population of chat board
+        for (var i=0; i<10; i++) {
+          // populate 10 most recent posts
+          app.append(data.results[i]);
+        }
+
+
+      } else {
+        app.append(data.results[0]);
+      // update already populated chat board
+
+          // populate all most recent posts until last appended post
+
+      }
+      // app.chatLog = data.results;
+      // console.log(data.results);
+      // app.update();
+      //app.append(app.chatLog[0]);
+      // $('#chats').append('<div class="chatMessage"> <p class="userName">' 
+      //   + app.chatLog[0].username  + '</p> <p class="messageContent">' 
+      //   + app.chatLog[0].text + '</p> </div>');
     },
     error: function (data) {
       throw 'chatterbox: Failed to send message';
@@ -53,6 +79,29 @@ app.fetch = function (){
   });
 };
 
+app.update = function() {
+  app.append(app.chatLog[0]);
+}
+
 app.clearMessages = function (){
-  // debugger;
+
 };
+
+var message = {
+  username: 'ben',
+  text: '<div>test</div>',
+  roomname: '4chan'
+};
+
+function escapeHtml(text) {
+ var map = {
+   '&': '&amp;',
+   '<': '&lt;',
+   '>': '&gt;',
+   '"': '&quot;',
+   "'": '&#039;'
+ };
+
+ return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
