@@ -1,0 +1,15 @@
+/*#chats {
+  width: 100%;
+}
+.chatMessage {
+  display: block;
+  margin: 0 auto;
+  wi*//*dth: 80%;*/
+/*}*/
+.userName {
+  font-size: 1.3em;
+
+}
+.messageContent {
+  font-size: 0.9em;
+}
