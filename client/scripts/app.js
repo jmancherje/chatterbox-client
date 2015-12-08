@@ -3,19 +3,15 @@
 var app = {};
 
 app.init = function () {
-  //fetch messages
-  
-  //set chatLog to fetched messages
-  //iterate over first ten messages
-    //append to chat
-
+  app.fetch();
 }
 
 
 app.addMessage = function (item){
-  var message = escapeHtml(item.text);
+  var message = item.text ? escapeHtml(item.text) : "";
+  var name = item.username ? escapeHtml(item.username) : "";
   $('#chats').append('<div class="chatMessage"> <p class="userName">' 
-  + item.username  + '</p> <p class="messageContent">' 
+  + name  + '</p> <p class="messageContent">' 
   + message + '</p> </div>');
 }
 
@@ -30,7 +26,7 @@ app.send = function (message) {
     dataType: 'json',
     contentType: 'application/json',
     success: function (data) {
-      console.log('Chatterbox: message sent');
+      app.fetch();
     },
     error: function (data) {
       throw 'chatterbox: Failed to send message';
@@ -47,24 +43,17 @@ app.fetch = function (){
     dataType: 'json',
     contentType: 'application/json',
     success: function (data) {
-      console.log(data.results);
-      if ($('#chats').children.length <= 2) {
-      // initial population of chat board
-        for (var i=0; i<10; i++) {
-          // populate 10 most recent posts
-          app.addMessage(data.results[i]);
-        }
 
-
-      } else {
-        app.addMessage(data.results[0]);
-      // update already populated chat board
-
-          // populate all most recent posts until last appended post
-
+    app.clearMessages();
+    for (var i=0; i<20; i++) {
+        app.addMessage(data.results[i]);
+      if(!_.contains(app.room,data.results[i].roomname)){
+        app.addRoom(data.results[i].roomname);
       }
+    }
 
-      app.latest = data.results[0];
+
+      
     },
     error: function (data) {
       throw 'chatterbox: Failed to send message';
@@ -72,13 +61,20 @@ app.fetch = function (){
   });
 };
 
-app.update = function() {
-  app.addMessage(app.chatLog[0]);
-}
+app.rooms = [];
 
-app.clearMessages = function (){
-
+app.addRoom = function (val) {
+  // body...
+  // populate 10 most recent posts
+    if(!_.contains(app.rooms, val)){
+      $('#roomSelect').append('<option value="'+ val + '">' + val + '</option>');
+      app.rooms.push(val);
+    }
 };
+
+app.clearMessages = function () {
+  $('#chats').children().remove();
+}
 
 var message = {
   username: 'purple platypus',
@@ -98,6 +94,31 @@ function escapeHtml(text) {
  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-app.clearMessages = function () {
-  $('#chats').children().remove();
-}
+app.addFriend = function () {
+  console.log('test');
+};
+
+$(document).ready(function(){
+  app.init();
+
+  $('#chats').on('click', 'p.userName', function () {
+    app.addFriend($(this).text());
+  });
+
+  $('#main').on('click', '#submit', function (event) {
+    event.preventDefault();
+    var messageObj = {
+      username: $('#nameInput').val(),
+      message : $('#sendMessage').val(),
+      roomname: $('#roomSelect').val()
+    }
+    console.log(messageObj);
+    app.send(messageObj);
+    
+  });
+
+});
+
+
+
+
