@@ -98,6 +98,16 @@ app.addFriend = function () {
   console.log('test');
 };
 
+app.handleSubmit = function () {
+    var messageObj = {
+      username: $('#username').val(),
+      text : $('#message').val(),
+      roomname: $('#roomSelect').val()
+    }
+    console.log(messageObj);
+    app.send(messageObj);
+};
+
 $(document).ready(function(){
   app.init();
 
@@ -105,16 +115,9 @@ $(document).ready(function(){
     app.addFriend($(this).text());
   });
 
-  $('#main').on('click', '#submit', function (event) {
+  $('#main').on('click', '.submit', function (event) {
     event.preventDefault();
-    var messageObj = {
-      username: $('#nameInput').val(),
-      message : $('#sendMessage').val(),
-      roomname: $('#roomSelect').val()
-    }
-    console.log(messageObj);
-    app.send(messageObj);
-    
+    app.handleSubmit();
   });
 
 });
