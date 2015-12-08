@@ -35,7 +35,7 @@ app.send = function (message) {
   });
 };
 
-app.fetch = function (){
+app.fetch = function () {
     $.ajax({
     url: 'https://api.parse.com/1/classes/chatterbox',
     type: 'GET',
@@ -44,13 +44,31 @@ app.fetch = function (){
     contentType: 'application/json',
     success: function (data) {
 
-    app.clearMessages();
-    for (var i=0; i<20; i++) {
-        app.addMessage(data.results[i]);
-      if(!_.contains(app.room,data.results[i].roomname)){
-        app.addRoom(data.results[i].roomname);
+    // check value of room name drop down
+    var room = $('#roomSelect').val();
+    var totalMessages = 0;
+    var j = 0;
+    // if default, load all messages
+    if(room === 'home'){
+      app.clearMessages();
+      for (var i=0; i<20; i++) {
+          app.addMessage(data.results[i]);
+        if(!_.contains(app.room,data.results[i].roomname)){
+          app.addRoom(data.results[i].roomname);
+        }
+      }
+    } else {
+      while (totalMessages <= 20 || data.results[j]===undefined) {
+        debugger;
+        if(data.results[j].roomname === room){
+          app.addMessage(data.results[j]);
+          totalMessages++;
+        }
+        j++;
       }
     }
+
+    // if not default, filter to show only one room     
 
 
       
@@ -119,6 +137,11 @@ $(document).ready(function(){
     event.preventDefault();
     app.handleSubmit();
   });
+
+  $('#main').on('change', '#roomSelect', function(){
+      app.clearMessages();
+      app.fetch();
+  })
 
 });
 
